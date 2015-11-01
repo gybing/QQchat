@@ -7,8 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "ThemeManager.h"
+#import "BaseViewController.h"
 
-@interface ViewController : UIViewController
+
+@interface ViewController : BaseViewController
 
 
 @end

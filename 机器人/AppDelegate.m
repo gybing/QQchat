@@ -7,39 +7,91 @@
 //
 
 #import "AppDelegate.h"
+#import "DDMenuController.h"
+#import "ViewController.h"
+#import "LeftViewController.h"
+#import "NavigationController.h"
+
+#import <iflyMSC/IFlyRecognizerViewDelegate.h>
+#import <iflyMSC/IFlyRecognizerView.h>
+#import <iflyMSC/IFlySpeechUtility.h>
+
+#import <ShareSDK/ShareSDK.h>
+#import"WeiboApi.h"
+#import<TencentOpenAPI/QQApiInterface.h>
+#import <TencentOpenAPI/TencentOAuth.h>
+#import "WXApi.h"
+#import "WeiboSDK.h"
+
+
 
 @interface AppDelegate ()
+@property(nonatomic,strong)ViewController *vc;
+@property(nonatomic,strong)DDMenuController *dd;
 
 @end
 
 @implementation AppDelegate
 
 
+-(BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url
+{
+    return [ShareSDK handleOpenURL:url
+                        wxDelegate:self];
+}
+
+-(BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
+{
+    return [ShareSDK handleOpenURL:url
+                 sourceApplication:sourceApplication
+                        annotation:annotation
+                        wxDelegate:self];
+}
+
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    // Override point for customization after application launch.
+    
+    
+    [ShareSDK registerApp:@"7f2688ca1e49"];
+    [ShareSDK connectSMS];
+    [ShareSDK connectMail];
+    /*Sina*/
+    [ShareSDK connectSinaWeiboWithAppKey:@"966765626" appSecret:@"d128a3dd0884ba5f788e7a2edaf811c8" redirectUri:@"http://www.baidu.com"];
+
+    
+    /*QQ好友分享 info里边要搞成16进制的*/
+  //  [ShareSDK connectQZoneWithAppKey:@"1103540883" appSecret:@"l3C7NDm849haVGwY"];
+  //  QQ微博   wb+ID
+//    [ShareSDK connectQQWithQZoneAppKey:@"1103540883"
+//                     qqApiInterfaceCls:[QQApiInterface class]
+//                       tencentOAuthCls:[TencentOAuth class]];
+//    [ShareSDK connectTencentWeiboWithAppKey:@"1103540883" appSecret:@"l3C7NDm849haVGwY" redirectUri:@"http://www.baidu.com"];
+//    /*wecat微信*/
+//    [ShareSDK connectWeChatSessionWithAppId:@"wxc9b8205009dae367" wechatCls:[WXApi class]];
+//    /*微信朋友圈95aa02d2dc058768901c8d1ca3b3c56b*/
+//    [ShareSDK connectWeChatTimelineWithAppId:@"wxc9b8205009dae367" wechatCls:[WXApi class]];
+    
+    
+
+    //语音接口
+    NSString *initstring = [[NSString alloc]initWithFormat:@"appid=%@",@"555f497c" ];
+    [IFlySpeechUtility createUtility:initstring];
+    
+    
+    UIStoryboard *story = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    self.vc = [story instantiateViewControllerWithIdentifier:@"MainViewControl"];
+
+    LeftViewController *lf = [story instantiateViewControllerWithIdentifier:@"LeftViewController"];
+    self.dd = [[DDMenuController alloc]init];
+    self.dd.leftViewController = lf;
+    self.dd.rightViewController = nil;
+    NavigationController *navic = [[NavigationController alloc]initWithRootViewController:self.vc];
+    self.dd.rootViewController= navic;
+    self.window.rootViewController = self.dd;
+    
     return YES;
 }
 
-- (void)applicationWillResignActive:(UIApplication *)application {
-    // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
-    // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
-}
 
-- (void)applicationDidEnterBackground:(UIApplication *)application {
-    // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
-    // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
-}
-
-- (void)applicationWillEnterForeground:(UIApplication *)application {
-    // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
-}
-
-- (void)applicationDidBecomeActive:(UIApplication *)application {
-    // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-}
-
-- (void)applicationWillTerminate:(UIApplication *)application {
-    // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
-}
 
 @end
