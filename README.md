@@ -5,6 +5,7 @@
 - 好久没有维护这个代码，发现由于语音云库的改变，造成程序的crash，现在已经修改了这个问题了。
 
 
+
 ##Photo
 ![image](http://a3.qpic.cn/psb?/V14QknOK3ve1Ih/0uqDRQDmuJOANVzUtc8FVN*IBmy8MThvvFwOnHHIqjA!/b/dG4AAAAAAAAA&bo=dwGbAgAAAAADAMo!&rf=viewer_4)
 ![image](http://a3.qpic.cn/psb?/V14QknOK3ve1Ih/h*qxpopNeMTPGet640PJf6NkRP7jUerRd0ndhHL4dWI!/b/dHMBAAAAAAAA&bo=dwGbAgAAAAADB80!&rf=viewer_4)
