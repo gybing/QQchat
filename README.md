@@ -7,7 +7,7 @@
 - 修改了讯飞语音造成的crash问题
 
 ##Images
--聊天界面图片：
+- 聊天界面图片：
 
 ![image](http://a3.qpic.cn/psb?/V14QknOK3ve1Ih/0uqDRQDmuJOANVzUtc8FVN*IBmy8MThvvFwOnHHIqjA!/b/dG4AAAAAAAAA&bo=dwGbAgAAAAADAMo!&rf=viewer_4)
 
