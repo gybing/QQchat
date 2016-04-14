@@ -31,7 +31,7 @@
 
 -(void)setup
 {
-    self.tableView.scrollEnabled = NO;
+    //self.tableView.scrollEnabled = NO;
     
     UIImageView *view = [[UIImageView alloc]init];
     [view setImage:[UIImage imageNamed:@"background"]];

@@ -19,7 +19,7 @@
 
     self.tableView.backgroundColor = [UIColor whiteColor];
 
-    self.tableView.scrollEnabled = NO;
+    //self.tableView.scrollEnabled = NO;
     
 }
 

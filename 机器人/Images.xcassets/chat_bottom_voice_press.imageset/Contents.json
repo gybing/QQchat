@@ -6,8 +6,8 @@
     },
     {
       "idiom" : "universal",
-      "scale" : "2x",
-      "filename" : "chat_bottom_voice_press@2x.png"
+      "filename" : "chat_bottom_voice_press@2x.png",
+      "scale" : "2x"
     },
     {
       "idiom" : "universal",

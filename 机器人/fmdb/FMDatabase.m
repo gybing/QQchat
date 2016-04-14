@@ -996,7 +996,7 @@ static int FMDBDatabaseBusyHandler(void *f, int count) {
                 obj = [arrayArgs objectAtIndex:(NSUInteger)idx];
             }
             else if (args) {
-                 obj = va_arg(args, id);
+                obj = va_arg(args, id);
             }
             else {
                 //We ran out of arguments

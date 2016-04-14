@@ -12,16 +12,20 @@
 #import "LeftViewController.h"
 #import "NavigationController.h"
 
-#import <iflyMSC/IFlyRecognizerViewDelegate.h>
-#import <iflyMSC/IFlyRecognizerView.h>
-#import <iflyMSC/IFlySpeechUtility.h>
+//#import <iflyMSC/IFlyRecognizerViewDelegate.h>
+//#import <iflyMSC/IFlyRecognizerView.h>
+//#import <iflyMSC/IFlySpeechUtility.h>
 
-#import <ShareSDK/ShareSDK.h>
-#import"WeiboApi.h"
-#import<TencentOpenAPI/QQApiInterface.h>
-#import <TencentOpenAPI/TencentOAuth.h>
-#import "WXApi.h"
-#import "WeiboSDK.h"
+//#import <ShareSDK/ShareSDK.h>
+//#import"WeiboApi.h"
+//#import<TencentOpenAPI/QQApiInterface.h>
+//#import <TencentOpenAPI/TencentOAuth.h>
+//#import "WXApi.h"
+//#import "WeiboSDK.h"
+#import <UIKit/UIKit.h>
+
+#import "UMessage.h"
+
 
 
 
@@ -34,48 +38,62 @@
 @implementation AppDelegate
 
 
--(BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url
-{
-    return [ShareSDK handleOpenURL:url
-                        wxDelegate:self];
-}
 
--(BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
-{
-    return [ShareSDK handleOpenURL:url
-                 sourceApplication:sourceApplication
-                        annotation:annotation
-                        wxDelegate:self];
-}
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
     
-    [ShareSDK registerApp:@"7f2688ca1e49"];
-    [ShareSDK connectSMS];
-    [ShareSDK connectMail];
-    /*Sina*/
-    [ShareSDK connectSinaWeiboWithAppKey:@"966765626" appSecret:@"d128a3dd0884ba5f788e7a2edaf811c8" redirectUri:@"http://www.baidu.com"];
+    //set AppKey and AppSecret
+    [UMessage startWithAppkey:@"55caa69467e58e8fe8005878" launchOptions:launchOptions];
+    
+    #if __IPHONE_OS_VERSION_MAX_ALLOWED >= _IPHONE80_
+    
+    if ([[[UIDevice currentDevice] systemVersion] compare:@"8.0"options:NSNumericSearch] != NSOrderedAscending)
+    {
+        //register remoteNotification types （iOS 8.0及其以上版本）
+        UIMutableUserNotificationAction *action1 = [[UIMutableUserNotificationAction alloc] init];
+        action1.identifier = @"action1_identifier";
+        action1.title=@"Accept";
+        action1.activationMode = UIUserNotificationActivationModeForeground;//当点击的时候启动程序
+        
+        UIMutableUserNotificationAction *action2 = [[UIMutableUserNotificationAction alloc] init];  //第二按钮
+        action2.identifier = @"action2_identifier";
+        action2.title=@"Reject";
+        action2.activationMode = UIUserNotificationActivationModeBackground;//当点击的时候不启动程序，在后台处理
+        action2.authenticationRequired = YES;//需要解锁才能处理，如果action.activationMode = UIUserNotificationActivationModeForeground;则这个属性被忽略；
+        action2.destructive = YES;
+        
+        UIMutableUserNotificationCategory *categorys = [[UIMutableUserNotificationCategory alloc] init];
+        categorys.identifier = @"category1";//这组动作的唯一标示
+        [categorys setActions:@[action1,action2] forContext:(UIUserNotificationActionContextDefault)];
+        
+        UIUserNotificationSettings *userSettings = [UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeBadge|UIUserNotificationTypeSound|UIUserNotificationTypeAlert
+                                                                                     categories:[NSSet setWithObject:categorys]];
+        [UMessage registerRemoteNotificationAndUserNotificationSettings:userSettings];
+        
+    } else{
+        //register remoteNotification types (iOS 8.0以下)
+        [UMessage registerForRemoteNotificationTypes:UIRemoteNotificationTypeBadge
+         |UIRemoteNotificationTypeSound
+         |UIRemoteNotificationTypeAlert];
+    }
+#else
+    
+    //register remoteNotification types (iOS 8.0以下)
+    [UMessage registerForRemoteNotificationTypes:UIRemoteNotificationTypeBadge
+     |UIRemoteNotificationTypeSound
+     |UIRemoteNotificationTypeAlert];
+    
+#endif
+    //for log
+    [UMessage setLogEnabled:YES];
+    
 
-    
-    /*QQ好友分享 info里边要搞成16进制的*/
-  //  [ShareSDK connectQZoneWithAppKey:@"1103540883" appSecret:@"l3C7NDm849haVGwY"];
-  //  QQ微博   wb+ID
-//    [ShareSDK connectQQWithQZoneAppKey:@"1103540883"
-//                     qqApiInterfaceCls:[QQApiInterface class]
-//                       tencentOAuthCls:[TencentOAuth class]];
-//    [ShareSDK connectTencentWeiboWithAppKey:@"1103540883" appSecret:@"l3C7NDm849haVGwY" redirectUri:@"http://www.baidu.com"];
-//    /*wecat微信*/
-//    [ShareSDK connectWeChatSessionWithAppId:@"wxc9b8205009dae367" wechatCls:[WXApi class]];
-//    /*微信朋友圈95aa02d2dc058768901c8d1ca3b3c56b*/
-//    [ShareSDK connectWeChatTimelineWithAppId:@"wxc9b8205009dae367" wechatCls:[WXApi class]];
-    
-    
 
     //语音接口
     NSString *initstring = [[NSString alloc]initWithFormat:@"appid=%@",@"555f497c" ];
-    [IFlySpeechUtility createUtility:initstring];
+//    [IFlySpeechUtility createUtility:initstring];
     
     
     UIStoryboard *story = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
@@ -91,6 +109,26 @@
     
     return YES;
 }
+
+
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
+{
+    [UMessage registerDeviceToken:deviceToken];
+    
+    
+}
+
+
+
+
+//处理收到的消息推送
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo
+{
+    [UMessage didReceiveRemoteNotification:userInfo];
+}
+
+
+
 
 
 

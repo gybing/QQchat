@@ -16,16 +16,18 @@
 #import "UIBarButtonItem+gyh.h"
 #import "MoreViewController.h"
 #import "MessageCache.h"
-#import <iflyMSC/IFlyRecognizerViewDelegate.h>
-#import <iflyMSC/IFlyRecognizerView.h>
-#import <iflyMSC/IFlySpeechConstant.h>
+//#import <iflyMSC/IFlyRecognizerViewDelegate.h>
+//#import <iflyMSC/IFlyRecognizerView.h>
+//#import <iflyMSC/IFlySpeechConstant.h>
+#import "WebViewController.h"
+#import "NavigationController.h"
 
 
 
-@interface ViewController ()<UITableViewDelegate,UITableViewDataSource,UITextFieldDelegate,UITextViewDelegate,IFlyRecognizerViewDelegate>
-{
-    IFlyRecognizerView *_iflyrReco;
-}
+@interface ViewController ()<UITableViewDelegate,UITableViewDataSource,UITextFieldDelegate,UITextViewDelegate>
+//{
+//    IFlyRecognizerView *_iflyrReco;
+//}
 
 @property (weak, nonatomic) IBOutlet UIView *toolView;
 @property (weak, nonatomic) IBOutlet UIButton *sound;
@@ -100,7 +102,7 @@
     
     
     self.navigationItem.rightBarButtonItem = [UIBarButtonItem ItemWithIcon:@"navigationbar_friendsearch_os7" highIcon:@"navigationbar_friendsearch_highlighted_os7" target:self action:@selector(more)];
-    
+
     // 去除分割线
 
     //设置背景图片
@@ -125,9 +127,7 @@
     self.inputView.leftViewMode = UITextFieldViewModeAlways;
     self.inputView.delegate = self;
     
-    //进去页面，首先显示一条数据
-//    NSString *ns = @"么西么西！";
-//    [self inputMessage:ns url:nil type:MessageTypeOther];
+
 
     [self tongzhi];
 
@@ -147,6 +147,9 @@
 
 -(void)tongzhi
 {
+    //点击图片进入webview
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(putweb:) name:@"NSPUTWEB" object:nil];
+    //工具栏通知
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(event:) name:@"NSJOKE" object:nil];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(event:) name:@"NSJJJ" object:nil];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(event:) name:@"PHOTO" object:nil];
@@ -154,15 +157,22 @@
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(event:) name:@"STORY" object:nil];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(event:) name:@"WEATHER" object:nil];
     
-    
+}
+
+
+-(void)putweb:(NSNotification *)noti
+{
+    WebViewController *vc = [[WebViewController alloc]init];
+    NavigationController *na = [[NavigationController alloc]initWithRootViewController:vc];
+
+    [self.view.window.rootViewController presentViewController:na animated:YES completion:nil];
+   
 }
 
 -(void)event:(NSNotification *)notifition
 {
-    [self inputMessage:notifition.object url:nil type:MessageTypeMe];
+    [self inputMessage:notifition.object url:nil type:0];
     [self replayWithText:notifition.object];
-    
-  //  [MessageCache addMessage:notifition.object];
 }
 
 
@@ -240,7 +250,7 @@
 #pragma mark 文本框代理
 -(BOOL)textFieldShouldReturn:(UITextField *)textField
 {
-   
+    
     //自己发送消息
     [self inputMessage:textField.text url:nil type:0];
 
@@ -271,19 +281,23 @@
     //3.发送请求。
     [mgr GET:@"http://www.tuling123.com/openapi/api" parameters:dic
      success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        
+         NSLog(@"----------- %@",responseObject);
          
-         NSString *ns = responseObject[@"text"];
+        NSString *ns = responseObject[@"text"];
          NSString *nss = responseObject[@"url"];
          NSDictionary *dic = responseObject[@"list"];
          NSLog(@"%@,%@---%@",ns,nss,dic);
-         
-        [self inputMessage:ns url:nss type:1];
+
+       [self inputMessage:ns url:nss type:1];
        
          
      } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
          NSLog(@"%@",error);
      }];
    
+    
+
 
 }
 
@@ -292,20 +306,18 @@
 {
     if (url) {
 
-        NSString *str = [text stringByAppendingString:url];
+      //  NSString *str = [text stringByAppendingString:url];
         Message *msg = [[Message alloc]init];
-        msg.text = str;
+      //  msg.text = text;
         msg.type = type;
+        msg.url = url;
         
         MessageFrame *mf = [[MessageFrame alloc]init];
         mf.message = msg;
         [self.messageFrames addObject:mf];
 
         //把数据存入数据库
-      [MessageCache addMessage:str type:type];
-        
-      
-
+        [MessageCache addMessage:msg.url type:type];
         
     }else{
         Message *msg = [[Message alloc]init];
@@ -320,6 +332,7 @@
     
     }
 
+    
     [self.tableview reloadData];
     
     // 4.自动滚动表格到最后一行
@@ -339,48 +352,48 @@
     self.view.backgroundColor = [UIColor redColor];
 }
 
-#pragma mark 语音
-
-- (IBAction)soundvoice {
-    
-    _iflyrReco = [[IFlyRecognizerView alloc]initWithCenter:self.view.center];
-    _iflyrReco.delegate = self;
-    [_iflyrReco setParameter:@"iat" forKey:[IFlySpeechConstant IFLY_DOMAIN]];
-   // [_iflyrReco setParameter:@"asrview.pcm" forKey:[IFlySpeechConstant ASR_AUDIO_PATH]];
-    //指定返回数据格式
-    [_iflyrReco setParameter:@"plain" forKey:[IFlySpeechConstant RESULT_TYPE]];
-    [_iflyrReco start];
-    
-}
-
-/**
- *  识别结果返回代理
- *
- *  @param resultArray 识别结果
- *  @param isLast      最后一次结果
- */
--(void)onResult:(NSArray *)resultArray isLast:(BOOL)isLast
-{
-    NSMutableString *result = [[NSMutableString alloc] init];
-    NSDictionary *dic = [resultArray objectAtIndex:0];
-    
-    for (NSString *key in dic) {
-        [result appendFormat:@"%@",key];
-    }
-    
-   // NSLog(@"%@",result);
-    [self replayWithText:result];
-    [self inputMessage:result url:nil type:MessageTypeMe];
-}
-/**
- *  识别会话错误返回代理
- *
- *  @param error 错误码
- */
--(void)onError:(IFlySpeechError *)error
-{
-    NSLog(@"error ------------ %@",error);
-}
-
+//#pragma mark 语音
+//
+//- (IBAction)soundvoice {
+//    
+//    _iflyrReco = [[IFlyRecognizerView alloc]initWithCenter:self.view.center];
+//    _iflyrReco.delegate = self;
+//    [_iflyrReco setParameter:@"iat" forKey:[IFlySpeechConstant IFLY_DOMAIN]];
+//   // [_iflyrReco setParameter:@"asrview.pcm" forKey:[IFlySpeechConstant ASR_AUDIO_PATH]];
+//    //指定返回数据格式
+//    [_iflyrReco setParameter:@"plain" forKey:[IFlySpeechConstant RESULT_TYPE]];
+//    [_iflyrReco start];
+//    
+//}
+//
+///**
+// *  识别结果返回代理
+// *
+// *  @param resultArray 识别结果
+// *  @param isLast      最后一次结果
+// */
+//-(void)onResult:(NSArray *)resultArray isLast:(BOOL)isLast
+//{
+//    NSMutableString *result = [[NSMutableString alloc] init];
+//    NSDictionary *dic = [resultArray objectAtIndex:0];
+//    
+//    for (NSString *key in dic) {
+//        [result appendFormat:@"%@",key];
+//    }
+//    
+//
+//    [self replayWithText:result];
+//    [self inputMessage:result url:nil type:MessageTypeMe];
+//}
+///**
+// *  识别会话错误返回代理
+// *
+// *  @param error 错误码
+// */
+//-(void)onError:(IFlySpeechError *)error
+//{
+//    NSLog(@"error ------------ %@",error);
+//}
+//
 
 @end

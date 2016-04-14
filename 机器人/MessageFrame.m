@@ -65,9 +65,17 @@
     // 文字计算的最大尺寸
     CGSize textMaxSize = CGSizeMake(200, MAXFLOAT);
     // 文字计算出来的真实尺寸(按钮内部label的尺寸)
-    CGSize textRealSize = [message.text sizeWithFont:[UIFont systemFontOfSize:15] maxSize:textMaxSize];
-    // 按钮最终的真实尺寸
-    textBtnSize = CGSizeMake(textRealSize.width + MJTextPadding * 2, textRealSize.height + MJTextPadding * 2);
+    if (message.url) {
+        
+        CGSize textRealSize = [message.url sizeWithFont:[UIFont systemFontOfSize:15] maxSize:textMaxSize];
+        // 按钮最终的真实尺寸
+        textBtnSize = CGSizeMake(textRealSize.width + MJTextPadding * 2, textRealSize.height + MJTextPadding * 2);
+    }else{
+        CGSize textRealSize = [message.text sizeWithFont:[UIFont systemFontOfSize:15] maxSize:textMaxSize];
+        // 按钮最终的真实尺寸
+        textBtnSize = CGSizeMake(textRealSize.width + MJTextPadding * 2, textRealSize.height + MJTextPadding * 2);
+    }
+    
     
     CGFloat textY = iconY;
 

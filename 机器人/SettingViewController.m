@@ -11,7 +11,7 @@
 #import "SuggestViewController.h"
 #import "MessageCache.h"
 #import "MBProgressHUD+MJ.h"
-#import <ShareSDK/ShareSDK.h>
+//#import <ShareSDK/ShareSDK.h>
 
 
 @interface SettingViewController ()
@@ -44,8 +44,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-//    ThemeManager *mana = [ThemeManager sharedInstance];
-//    self.tableView.backgroundColor = [mana themeColor];
+    ThemeManager *mana = [ThemeManager sharedInstance];
+    self.tableView.backgroundColor = [mana themeColor];
     
     self.tableView.backgroundColor = [UIColor colorWithRed:235/255.0 green:235/255.0 blue:235/255.0 alpha:1.0];
     
@@ -110,48 +110,48 @@
             
         }else{
             
-            [self show];
+//            [self show];
             
         }
     }
    
 }
 
--(void)show
-{
-  //  NSString *imagePath = @"girl1";
-    //构造分享内容
-    id<ISSContent> publishContent = [ShareSDK content:@"智能聊天机器人"
-                                       defaultContent:@"默认分享内容，没内容时显示"
-                                                image:[ShareSDK pngImageWithImage:[UIImage imageNamed:@"222"]]
-                                                title:@"机器人"
-                                                  url:@"http://www.tuling123.com"
-                                          description:@"shenm"
-                                            mediaType:SSPublishContentMediaTypeNews];
-    
-    [ShareSDK showShareActionSheet:nil
-                         shareList:nil
-                           content:publishContent
-                     statusBarTips:YES
-                       authOptions:nil
-                      shareOptions: nil
-                            result:^(ShareType type, SSResponseState state, id<ISSPlatformShareInfo> statusInfo, id<ICMErrorInfo> error, BOOL end) {
-                                if (state == SSResponseStateSuccess)
-                                {
-                                    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"分享成功！" delegate:nil cancelButtonTitle:@"好" otherButtonTitles:nil, nil];
-                                    [alert show];
-                                }
-                                else if (state == SSResponseStateFail)
-                                {
-                                    NSLog(NSLocalizedString(@"TEXT_SHARE_FAI", @"发布失败!error code == %d, error code == %@"), [error errorCode], [error errorDescription]);
-                                    NSString *errorMassage = [[NSString alloc] initWithFormat:@"分享失败！\n %@",[error errorDescription]];
-                                    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"提示" message:errorMassage delegate:nil cancelButtonTitle:@"好" otherButtonTitles:nil, nil];
-                                    [alert show];
-                                    
-                                }
-                            }];
-
-}
+//-(void)show
+//{
+//  //  NSString *imagePath = @"girl1";
+//    //构造分享内容
+//    id<ISSContent> publishContent = [ShareSDK content:@"智能聊天机器人"
+//                                       defaultContent:@"默认分享内容，没内容时显示"
+//                                                image:[ShareSDK pngImageWithImage:[UIImage imageNamed:@"222"]]
+//                                                title:@"机器人"
+//                                                  url:@"http://www.tuling123.com"
+//                                          description:@"shenm"
+//                                            mediaType:SSPublishContentMediaTypeNews];
+//    
+//    [ShareSDK showShareActionSheet:nil
+//                         shareList:nil
+//                           content:publishContent
+//                     statusBarTips:YES
+//                       authOptions:nil
+//                      shareOptions: nil
+//                            result:^(ShareType type, SSResponseState state, id<ISSPlatformShareInfo> statusInfo, id<ICMErrorInfo> error, BOOL end) {
+//                                if (state == SSResponseStateSuccess)
+//                                {
+//                                    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"分享成功！" delegate:nil cancelButtonTitle:@"好" otherButtonTitles:nil, nil];
+//                                    [alert show];
+//                                }
+//                                else if (state == SSResponseStateFail)
+//                                {
+//                                    NSLog(NSLocalizedString(@"TEXT_SHARE_FAI", @"发布失败!error code == %d, error code == %@"), [error errorCode], [error errorDescription]);
+//                                    NSString *errorMassage = [[NSString alloc] initWithFormat:@"分享失败！\n %@",[error errorDescription]];
+//                                    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"提示" message:errorMassage delegate:nil cancelButtonTitle:@"好" otherButtonTitles:nil, nil];
+//                                    [alert show];
+//                                    
+//                                }
+//                            }];
+//
+//}
 
 
 @end

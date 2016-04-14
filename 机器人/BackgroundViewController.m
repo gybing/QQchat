@@ -40,6 +40,7 @@ static NSString * const reuseIdentifier = @"Cell";
     
     flow.headerReferenceSize = CGSizeMake(375, 30);
     return [super initWithCollectionViewLayout:flow];
+
 }
 
 - (void)viewDidLoad {
@@ -55,7 +56,7 @@ static NSString * const reuseIdentifier = @"Cell";
     
     ThemeManager *manager = [ThemeManager sharedInstance];
     _itemarray = [NSArray arrayWithArray:[manager listOfAllTheme]];
-    
+    self.collectionView.backgroundColor = [manager themeColor];
     
     //设置一个按钮，当被cell被选择的时候添加到cell上面
     UIButton *btn = [[UIButton alloc]initWithFrame:CGRectMake(90, 0, 30, 30)];

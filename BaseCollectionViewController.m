@@ -27,6 +27,7 @@ static NSString * const reuseIdentifier = @"Cell";
 {
     ThemeManager *defaultManager = [ThemeManager sharedInstance];
     [self.navigationController.navigationBar setBackgroundImage:[defaultManager themedImageWithName:@"navigationBar"] forBarMetrics:UIBarMetricsDefault];
+    self.collectionView.backgroundColor = [defaultManager themeColor];
     [self configUIAppearce];
 }
 

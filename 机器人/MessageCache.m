@@ -43,7 +43,7 @@ static FMDatabaseQueue *_queue;
         NSNumber *num = [NSNumber numberWithInt:type];
         // 2.存储数据
         [db executeUpdate:@"insert into t_message (message, type) values(?, ?)", str, num];
-         NSLog(@"%@,%d",str,type);
+         NSLog(@"存储－－－－%@,%d",str,type);
     }];
 
 }
@@ -64,11 +64,11 @@ static FMDatabaseQueue *_queue;
             NSString *name = [rs stringForColumn:@"message"];
             int type = [rs intForColumn:@"type"];
             
-            NSLog(@"%@ ,%d",name,type);
+            NSLog(@"cache --------- %@ ,%d",name,type);
             Message *msg = [[Message alloc]init];
             msg.text = name;
             msg.type = type;
-            
+
             MessageFrame *mf = [[MessageFrame alloc]init];
             mf.message = msg;
         
