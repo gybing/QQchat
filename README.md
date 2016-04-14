@@ -5,6 +5,7 @@
 
 ##Update Log
 - 修改了讯飞语音造成的crash问题
+
 ![image](http://a3.qpic.cn/psb?/V14QknOK3ve1Ih/0uqDRQDmuJOANVzUtc8FVN*IBmy8MThvvFwOnHHIqjA!/b/dG4AAAAAAAAA&bo=dwGbAgAAAAADAMo!&rf=viewer_4)
 
 
