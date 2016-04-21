@@ -10,14 +10,14 @@
 - 聊天界面图片：
 
 ![image](https://raw.githubusercontent.com/gaoyuhang/QQchat/master/photo/1.png)
-
+---
 - 帮助界面图片
 
 ![image](https://raw.githubusercontent.com/gaoyuhang/QQchat/master/photo/2.png)
-
+---
 - 主题切换图片
  
 ![image](https://raw.githubusercontent.com/gaoyuhang/QQchat/master/photo/3.png)
-
+---
 
 
